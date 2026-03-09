@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saarthi Bot — सारथी बॉट | Your Personal AI Assistant</title>
+  <meta name="description" content="Saarthi Bot - Premium bilingual AI assistant. English + Hindi. Smart automation. Any OS, Any Platform."/>
+  <meta property="og:title" content="Saarthi Bot — Your Personal AI Assistant"/>
+  <meta property="og:description" content="Premium bilingual AI — Hindi + English. Smart. Fast. Yours."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nb: #00f0ff;
+      --np: #bf5fff;
+      --ng: #39ff14;
+      --nk: #ff2d78;
+      --bg: #030712;
+      --card: #0a0e1a;
+      --surf: #0f1629;
+      --bdr: #1a2540;
+      --t1: #e8f4fd;
+      --t2: #8aa5c0;
+      --t3: #4a6580;
+      --gb: 0 0 30px rgba(0,240,255,.35);
+      --gp: 0 0 30px rgba(191,95,255,.35);
+      --gg: 0 0 30px rgba(57,255,20,.3);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      background:var(--bg);color:var(--t1);
+      font-family:'Rajdhani',sans-serif;
+      overflow-x:hidden;cursor:none;
+    }
+
+    /* ── GRID BG ── */
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(0,240,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,240,255,.025) 1px,transparent 1px);
+      background-size:64px 64px;
+      pointer-events:none;z-index:0;
+    }
+
+    /* ── CURSOR ── */
+    #cur,#cur2{position:fixed;pointer-events:none;border-radius:50%;z-index:9999;transition:transform .1s}
+    #cur{width:10px;height:10px;background:var(--nb);box-shadow:0 0 12px var(--nb)}
+    #cur2{width:34px;height:34px;border:1.5px solid rgba(0,240,255,.45);transition:all .18s ease}
+
+    /* ── AMBIENT ORBS ── */
+    .orb{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0}
+    .o1{width:700px;height:700px;background:rgba(0,240,255,.055);top:-200px;right:-150px}
+    .o2{width:600px;height:600px;background:rgba(191,95,255,.065);bottom:0;left:-200px}
+    .o3{width:500px;height:500px;background:rgba(57,255,20,.03);top:40%;left:40%}
+
+    /* ── NAV ── */
+    nav{
+      position:fixed;top:0;width:100%;z-index:200;
+      padding:0 56px;height:68px;
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(3,7,18,.88);
+      backdrop-filter:blur(24px);
+      border-bottom:1px solid rgba(0,240,255,.1);
+    }
+    .logo{
+      font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:900;
+      background:linear-gradient(135deg,var(--nb),var(--np));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      letter-spacing:3px;cursor:none;user-select:none;
+      display:flex;flex-direction:column;line-height:1.1;
+    }
+    .logo span{font-size:.55rem;letter-spacing:5px;font-weight:400;color:var(--ng);-webkit-text-fill-color:var(--ng)}
+    .nav-r{display:flex;gap:36px;align-items:center}
+    .nav-r a{
+      color:var(--t2);text-decoration:none;font-size:.82rem;
+      letter-spacing:2px;font-weight:600;text-transform:uppercase;
+      transition:color .3s;cursor:none;position:relative;
+    }
+    .nav-r a::after{
+      content:'';position:absolute;bottom:-4px;left:0;
+      width:0;height:1px;background:var(--nb);
+      transition:width .3s;box-shadow:var(--gb);
+    }
+    .nav-r a:hover{color:var(--nb)}
+    .nav-r a:hover::after{width:100%}
+    .btn-nav{
+      padding:9px 24px;border:1px solid var(--nb);
+      color:var(--nb)!important;border-radius:2px;
+      font-family:'Orbitron',sans-serif;font-size:.68rem!important;
+      transition:all .3s!important;
+    }
+    .btn-nav:hover{background:var(--nb)!important;color:var(--bg)!important;-webkit-text-fill-color:var(--bg)!important;box-shadow:var(--gb)!important}
+    .btn-nav::after{display:none!important}
+
+    /* ── HERO ── */
+    .hero{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:120px 40px 80px;
+      position:relative;z-index:1;
+    }
+    .hero-inner{max-width:900px}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid rgba(57,255,20,.4);
+      background:rgba(57,255,20,.06);
+      padding:6px 20px;border-radius:100px;
+      font-family:'Space Mono',monospace;font-size:.68rem;
+      color:var(--ng);letter-spacing:2px;margin-bottom:40px;
+      animation:badge-pulse 3s ease-in-out infinite;
+    }
+    .badge::before{
+      content:'';width:7px;height:7px;background:var(--ng);
+      border-radius:50%;box-shadow:0 0 10px var(--ng);
+      animation:blink 1.4s infinite;
+    }
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+    @keyframes badge-pulse{0%,100%{box-shadow:0 0 0 rgba(57,255,20,0)}50%{box-shadow:0 0 24px rgba(57,255,20,.18)}}
+
+    h1.main-title{
+      font-family:'Orbitron',sans-serif;
+      font-size:clamp(3.2rem,9vw,8rem);
+      font-weight:900;line-height:.95;
+      letter-spacing:-2px;margin-bottom:8px;
+    }
+    .t-blue{
+      display:block;
+      background:linear-gradient(135deg,#fff 0%,var(--nb) 45%,var(--np) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .t-sub{
+      display:block;
+      font-size:.38em;letter-spacing:8px;margin-top:10px;
+      background:linear-gradient(135deg,var(--np),var(--nk));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hero-desc{
+      font-size:1.15rem;color:var(--t2);
+      max-width:580px;margin:32px auto 14px;
+      line-height:1.9;font-weight:400;
+    }
+    .hero-desc strong{color:var(--nb);font-weight:600}
+    .hero-hindi{
+      font-size:1rem;color:rgba(191,95,255,.75);
+      font-style:italic;margin-bottom:48px;letter-spacing:.5px;
+    }
+    .hero-btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+
+    .btn-p{
+      padding:16px 44px;
+      background:linear-gradient(135deg,var(--nb),var(--np));
+      border:none;border-radius:2px;color:var(--bg);
+      font-family:'Orbitron',sans-serif;font-size:.78rem;
+      font-weight:700;letter-spacing:3px;text-transform:uppercase;
+      cursor:none;text-decoration:none;
+      display:inline-flex;align-items:center;gap:10px;
+      transition:all .3s;position:relative;overflow:hidden;
+    }
+    .btn-p::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,var(--np),var(--nb));
+      opacity:0;transition:opacity .3s;
+    }
+    .btn-p:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(0,240,255,.4)}
+    .btn-p:hover::before{opacity:1}
+    .btn-p span{position:relative;z-index:1}
+    .btn-s{
+      padding:16px 44px;background:transparent;
+      border:1px solid rgba(0,240,255,.35);
+      border-radius:2px;color:var(--nb);
+      font-family:'Orbitron',sans-serif;font-size:.78rem;
+      font-weight:700;letter-spacing:3px;text-transform:uppercase;
+      cursor:none;text-decoration:none;
+      display:inline-flex;align-items:center;gap:10px;transition:all .3s;
+    }
+    .btn-s:hover{border-color:var(--nb);background:rgba(0,240,255,.06);box-shadow:var(--gb);transform:translateY(-3px)}
+
+    /* scroll hint */
+    .scroll-hint{
+      position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      color:var(--t3);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:3px;
+      animation:sh 2.2s ease-in-out infinite;
+    }
+    .scroll-hint::after{content:'';width:1px;height:42px;background:linear-gradient(to bottom,var(--nb),transparent)}
+    @keyframes sh{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+    /* ── STATS ── */
+    .stats{
+      position:relative;z-index:1;
+      display:grid;grid-template-columns:repeat(4,1fr);
+      border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);
+      background:rgba(10,14,26,.7);
+    }
+    .stat{
+      padding:28px 20px;text-align:center;
+      border-right:1px solid var(--bdr);
+    }
+    .stat:last-child{border-right:none}
+    .stat-n{
+      font-family:'Orbitron',sans-serif;font-size:2.4rem;font-weight:900;
+      background:linear-gradient(135deg,var(--nb),var(--np));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .stat-l{font-size:.75rem;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+
+    /* ── SECTIONS ── */
+    section{position:relative;z-index:1;padding:110px 60px}
+    .sec-tag{
+      font-family:'Space Mono',monospace;font-size:.68rem;
+      color:var(--ng);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;
+    }
+    .sec-h{
+      font-family:'Orbitron',sans-serif;
+      font-size:clamp(1.8rem,4vw,3.2rem);font-weight:900;line-height:1.1;margin-bottom:18px;
+    }
+    .sec-h .ac{color:var(--nb)}
+    .sec-p{color:var(--t2);font-size:1.05rem;max-width:520px;line-height:1.85}
+    .sec-center{text-align:center}
+    .sec-center .sec-p{margin:0 auto}
+
+    /* ── FEATURES ── */
+    .feat-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:1px;margin-top:70px;
+      border:1px solid var(--bdr);
+    }
+    .fc{
+      background:var(--card);padding:44px 36px;
+      position:relative;overflow:hidden;
+      transition:all .4s;border:1px solid transparent;
+    }
+    .fc::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(0,240,255,.035),transparent);
+      opacity:0;transition:opacity .4s;
+    }
+    .fc:hover{border-color:rgba(0,240,255,.18);transform:translateY(-4px)}
+    .fc:hover::before{opacity:1}
+    .fc.p:hover{border-color:rgba(191,95,255,.2)}
+    .fc.g:hover{border-color:rgba(57,255,20,.2)}
+    .fi{
+      width:52px;height:52px;border-radius:4px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;margin-bottom:22px;
+      border:1px solid rgba(0,240,255,.2);
+      background:rgba(0,240,255,.04);transition:all .3s;
+    }
+    .fc.p .fi{border-color:rgba(191,95,255,.25);background:rgba(191,95,255,.05)}
+    .fc.g .fi{border-color:rgba(57,255,20,.25);background:rgba(57,255,20,.04)}
+    .fc:hover .fi{box-shadow:var(--gb)}
+    .fc.p:hover .fi{box-shadow:var(--gp)}
+    .fc.g:hover .fi{box-shadow:var(--gg)}
+    .ft{
+      font-family:'Space Mono',monospace;font-size:.62rem;
+      color:var(--nb);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;
+    }
+    .fc.p .ft{color:var(--np)}
+    .fc.g .ft{color:var(--ng)}
+    .fh{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:12px;color:#fff}
+    .fp{color:var(--t2);font-size:.95rem;line-height:1.75}
+    .fhi{font-size:.82rem;color:rgba(191,95,255,.6);margin-top:10px;font-style:italic}
+
+    /* ── TERMINAL DEMO ── */
+    .demo-wrap{
+      display:grid;grid-template-columns:1fr 1fr;
+      gap:72px;align-items:center;
+    }
+    .terminal{
+      background:#060b14;
+      border:1px solid var(--bdr);border-radius:8px;overflow:hidden;
+      box-shadow:0 0 80px rgba(0,0,0,.7),0 0 40px rgba(0,240,255,.04);
+    }
+    .t-head{
+      background:#0d1320;padding:14px 20px;
+      display:flex;align-items:center;gap:8px;
+      border-bottom:1px solid var(--bdr);
+    }
+    .dot{width:12px;height:12px;border-radius:50%}
+    .dr{background:#ff5f57}.dy{background:#febc2e}.dg{background:#28c840}
+    .t-title{
+      font-family:'Space Mono',monospace;font-size:.68rem;
+      color:var(--t3);margin-left:6px;letter-spacing:1px;
+    }
+    .t-body{padding:28px 26px;min-height:400px}
+    .tl{font-family:'Space Mono',monospace;font-size:.8rem;line-height:2;display:flex;gap:10px}
+    .tp{color:var(--ng);flex-shrink:0}
+    .tc{color:var(--t1)}
+    .to{color:var(--t3);padding-left:18px}
+    .tb{color:var(--nb);padding-left:18px}
+    .thi{color:var(--np);padding-left:18px;font-style:italic}
+    .tg{height:14px}
+    .tcur{
+      display:inline-block;width:8px;height:15px;
+      background:var(--nb);vertical-align:middle;
+      animation:blink 1s infinite;
+    }
+
+    /* ── BILINGUAL ── */
+    .lang-grid{
+      display:grid;grid-template-columns:1fr 1fr;
+      gap:28px;max-width:820px;margin:56px auto 0;
+    }
+    .lc{
+      background:var(--card);border:1px solid var(--bdr);
+      border-radius:8px;padding:44px 36px;
+      transition:all .4s;position:relative;overflow:hidden;
+    }
+    .lc.en{border-top:3px solid var(--nb)}
+    .lc.hi{border-top:3px solid var(--np)}
+    .lc.en:hover{transform:translateY(-6px);box-shadow:0 24px 70px rgba(0,240,255,.1)}
+    .lc.hi:hover{transform:translateY(-6px);box-shadow:0 24px 70px rgba(191,95,255,.1)}
+    .lc-flag{font-size:2.8rem;margin-bottom:14px}
+    .lc-name{
+      font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;margin-bottom:14px;
+    }
+    .lc.en .lc-name{color:var(--nb)}
+    .lc.hi .lc-name{color:var(--np)}
+    .lc-text{color:var(--t2);font-size:.95rem;line-height:1.85}
+    .lc-reply{
+      display:inline-block;margin-top:14px;
+      padding:10px 16px;border-radius:4px;
+      font-size:.88rem;font-weight:600;
+    }
+    .lc.en .lc-reply{background:rgba(0,240,255,.07);color:var(--nb);border:1px solid rgba(0,240,255,.2)}
+    .lc.hi .lc-reply{background:rgba(191,95,255,.07);color:var(--np);border:1px solid rgba(191,95,255,.2)}
+
+    /* ── PLATFORMS ── */
+    .plat-wrap{
+      display:flex;flex-wrap:wrap;gap:14px;
+      justify-content:center;margin-top:56px;
+    }
+    .pb{
+      display:flex;align-items:center;gap:10px;
+      background:var(--card);border:1px solid var(--bdr);
+      padding:14px 24px;border-radius:4px;
+      font-size:.9rem;font-weight:600;letter-spacing:1px;
+      transition:all .3s;cursor:none;
+    }
+    .pb:hover{border-color:var(--nb);box-shadow:var(--gb);transform:translateY(-2px)}
+
+    /* ── HOW IT WORKS ── */
+    .steps{
+      display:grid;grid-template-columns:repeat(4,1fr);
+      gap:24px;margin-top:70px;
+    }
+    .step{
+      background:var(--card);border:1px solid var(--bdr);
+      border-radius:6px;padding:36px 28px;
+      text-align:center;position:relative;
+      transition:all .4s;
+    }
+    .step:hover{border-color:rgba(0,240,255,.2);transform:translateY(-4px)}
+    .step-num{
+      width:52px;height:52px;border-radius:50%;
+      background:linear-gradient(135deg,var(--nb),var(--np));
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;
+      color:var(--bg);margin:0 auto 20px;
+      box-shadow:0 0 24px rgba(0,240,255,.25);
+    }
+    .step-t{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:10px}
+    .step-p{color:var(--t2);font-size:.88rem;line-height:1.7}
+    /* connector line */
+    .step::after{
+      content:'→';position:absolute;right:-22px;top:50%;transform:translateY(-50%);
+      color:var(--nb);font-size:1.2rem;opacity:.4;
+    }
+    .step:last-child::after{display:none}
+
+    /* ── CHAT PREVIEW ── */
+    .chat-preview{
+      max-width:700px;margin:56px auto 0;
+      background:var(--card);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;
+    }
+    .cp-head{
+      background:var(--surf);padding:16px 24px;
+      display:flex;align-items:center;gap:12px;
+      border-bottom:1px solid var(--bdr);
+    }
+    .cp-av{
+      width:36px;height:36px;border-radius:50%;
+      background:linear-gradient(135deg,rgba(0,240,255,.2),rgba(191,95,255,.2));
+      border:1px solid rgba(0,240,255,.3);
+      display:flex;align-items:center;justify-content:center;font-size:1rem;
+    }
+    .cp-info-name{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;color:var(--nb)}
+    .cp-info-st{font-size:.68rem;color:var(--ng);letter-spacing:1px;display:flex;align-items:center;gap:5px}
+    .cp-info-st::before{content:'';width:5px;height:5px;background:var(--ng);border-radius:50%;box-shadow:0 0 6px var(--ng);animation:blink 2s infinite}
+    .cp-body{padding:24px}
+    .msg{margin-bottom:16px;display:flex;flex-direction:column}
+    .msg.u{align-items:flex-end}
+    .msg.b{align-items:flex-start}
+    .bubble{
+      max-width:80%;padding:12px 16px;
+      font-size:.92rem;line-height:1.7;border-radius:2px;
+    }
+    .msg.u .bubble{
+      background:rgba(0,240,255,.07);
+      border:1px solid rgba(0,240,255,.2);
+      border-right:2px solid var(--nb);
+    }
+    .msg.b .bubble{
+      background:var(--surf);
+      border:1px solid var(--bdr);
+      border-left:2px solid var(--np);
+      color:var(--t1);
+    }
+    .msg-from{
+      font-family:'Space Mono',monospace;font-size:.6rem;
+      letter-spacing:2px;margin-bottom:5px;
+    }
+    .msg.u .msg-from{color:var(--nb)}
+    .msg.b .msg-from{color:var(--np)}
+
+    /* ── CTA ── */
+    .cta-section{
+      text-align:center;padding:110px 60px;
+      background:radial-gradient(ellipse at center,rgba(0,240,255,.04) 0%,transparent 65%);
+    }
+    .cta-box{
+      max-width:680px;margin:0 auto;
+      border:1px solid rgba(0,240,255,.18);
+      background:rgba(0,240,255,.015);
+      border-radius:8px;padding:72px 56px;position:relative;overflow:hidden;
+    }
+    .cta-box::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--nb),var(--np),transparent);
+    }
+    .cta-box::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--np),var(--nb),transparent);
+    }
+
+    /* ── FOOTER ── */
+    footer{
+      position:relative;z-index:1;
+      border-top:1px solid var(--bdr);
+      padding:48px 60px;
+      display:flex;justify-content:space-between;align-items:center;
+      flex-wrap:wrap;gap:24px;
+    }
+    .f-logo{
+      font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;
+      background:linear-gradient(135deg,var(--nb),var(--np));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .f-links{display:flex;gap:28px}
+    .f-links a{color:var(--t3);text-decoration:none;font-size:.85rem;transition:color .3s;letter-spacing:1px}
+    .f-links a:hover{color:var(--nb)}
+    .f-copy{color:var(--t3);font-size:.78rem}
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    .fu{animation:fadeUp .8s ease forwards}
+    .d1{animation-delay:.1s;opacity:0}
+    .d2{animation-delay:.25s;opacity:0}
+    .d3{animation-delay:.42s;opacity:0}
+    .d4{animation-delay:.6s;opacity:0}
+    .d5{animation-delay:.8s;opacity:0}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .feat-grid{grid-template-columns:repeat(2,1fr)}
+      .steps{grid-template-columns:repeat(2,1fr)}
+      .step::after{display:none}
+    }
+    @media(max-width:768px){
+      nav{padding:0 20px}
+      .nav-r a:not(.btn-nav){display:none}
+      section{padding:80px 22px}
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .stat:nth-child(2){border-right:none}
+      .feat-grid{grid-template-columns:1fr}
+      .demo-wrap{grid-template-columns:1fr;gap:40px}
+      .lang-grid{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr}
+      footer{flex-direction:column;text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <div id="cur"></div>
+  <div id="cur2"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="logo">SAARTHI BOT<span>सारथी बॉट • YOUR GUIDE</span></div>
+    <div class="nav-r">
+      <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
+      <a href="#chat">Chat</a>
+      <a href="#contact" class="btn-nav">LAUNCH ⚡</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <div class="badge fu d1">🟢 LIVE — v2.0 BILINGUAL MODE ACTIVE</div>
+      <h1 class="main-title fu d2">
+        <span class="t-blue">SAARTHI BOT</span>
+        <span class="t-sub">सारथी बॉट — YOUR INTELLIGENT GUIDE</span>
+      </h1>
+      <p class="hero-desc fu d3">
+        A <strong>next-generation bilingual AI assistant</strong> that speaks your language —
+        <strong>English, Hindi</strong>, or both. Smarter automation. Premium experience. Zero compromise.
+      </p>
+      <p class="hero-hindi fu d3">आपका अपना व्यक्तिगत AI सहायक — हर काम में साथ।</p>
+      <div class="hero-btns fu d4">
+        <a href="#chat" class="btn-p"><span>⚡ START CHATTING</span></a>
+        <a href="#features" class="btn-s">🔍 EXPLORE FEATURES</a>
+      </div>
+    </div>
+    <div class="scroll-hint fu d5">SCROLL</div>
+  </section>
+
+  <!-- ── STATS ── -->
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-n">2</div><div class="stat-l">Languages (EN+HI)</div></div>
+    <div class="stat"><div class="stat-n">15+</div><div class="stat-l">Unique Features</div></div>
+    <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Platforms Supported</div></div>
+    <div class="stat"><div class="stat-n">99.9%</div><div class="stat-l">Uptime</div></div>
+  </div>
+
+  <!-- ── FEATURES ── -->
+  <section id="features">
+    <div class="sec-center">
+      <div class="sec-tag">// CAPABILITIES</div>
+      <h2 class="sec-h">Next-Level <span class="ac">Intelligence</span></h2>
+      <p class="sec-p">Everything you need, amplified. Features no other bot comes close to.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="fc">
+        <div class="fi">🧠</div>
+        <div class="ft">CONTEXTUAL AI</div>
+        <h3 class="fh">Deep Context Memory</h3>
+        <p class="fp">Remembers your preferences, past conversations, and workflow context. Responses evolve intelligently with every interaction.</p>
+        <p class="fhi">हर बातचीत को याद रखता है।</p>
+      </div>
+      <div class="fc p">
+        <div class="fi">🌐</div>
+        <div class="ft">BILINGUAL ENGINE</div>
+        <h3 class="fh">Hindi ↔ English Auto-Switch</h3>
+        <p class="fp">Auto-detects your language and responds naturally. Seamlessly mix Hindi and English in the same conversation.</p>
+        <p class="fhi">हिंदी और अंग्रेज़ी दोनों में बात करें।</p>
+      </div>
+      <div class="fc g">
+        <div class="fi">⚙️</div>
+        <div class="ft">AUTOMATION</div>
+        <h3 class="fh">Smart Workflow Engine</h3>
+        <p class="fp">Build multi-step automations with conditional logic. Automate tasks across platforms using natural language commands.</p>
+        <p class="fhi">बस बोलें, काम हो जाएगा।</p>
+      </div>
+      <div class="fc">
+        <div class="fi">🔔</div>
+        <div class="ft">NOTIFICATIONS</div>
+        <h3 class="fh">Context-Aware Alerts</h3>
+        <p class="fp">Smart notifications that know when to interrupt and when to wait. Reminders, scheduling, and follow-ups — automated.</p>
+        <p class="fhi">सही समय पर सही सूचना।</p>
+      </div>
+      <div class="fc p">
+        <div class="fi">🛡️</div>
+        <div class="ft">SECURITY</div>
+        <h3 class="fh">Zero-Trust Architecture</h3>
+        <p class="fp">Every command verified. Encrypted sessions. Your data stays private. Complete security without sacrificing speed.</p>
+        <p class="fhi">आपकी जानकारी पूरी तरह सुरक्षित।</p>
+      </div>
+      <div class="fc g">
+        <div class="fi">🔌</div>
+        <div class="ft">INTEGRATIONS</div>
+        <h3 class="fh">Universal Platform Support</h3>
+        <p class="fp">Works on Windows, macOS, Linux, Android, iOS, Web, Telegram, Discord. One bot — every platform — your way.</p>
+        <p class="fhi">हर OS, हर Platform पर काम करे।</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEMO TERMINAL ── -->
+  <section id="demo" style="background:rgba(10,14,26,.5)">
+    <div class="demo-wrap">
+      <div>
+        <div class="sec-tag">// LIVE DEMO</div>
+        <h2 class="sec-h">See <span class="ac">Saarthi</span><br>In Action</h2>
+        <p class="sec-p">
+          Watch Saarthi switch between Hindi and English seamlessly, remember context,
+          and execute complex commands with a single sentence.
+        </p>
+        <div style="margin-top:40px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;gap:12px;color:var(--t2);font-size:.9rem">
+            <span style="color:var(--ng);font-size:1.1rem">✓</span> Auto language detection
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;color:var(--t2);font-size:.9rem">
+            <span style="color:var(--ng);font-size:1.1rem">✓</span> Natural Hindi conversation
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;color:var(--t2);font-size:.9rem">
+            <span style="color:var(--ng);font-size:1.1rem">✓</span> Smart workflow creation
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;color:var(--t2);font-size:.9rem">
+            <span style="color:var(--ng);font-size:1.1rem">✓</span> Context-aware replies
+          </div>
+        </div>
+        <a href="#chat" class="btn-p" style="display:inline-flex;margin-top:40px;width:fit-content">
+          <span>⚡ TRY IT NOW</span>
+        </a>
+      </div>
+      <div class="terminal">
+        <div class="t-head">
+          <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <div class="t-title">saarthi-bot ~ bilingual session</div>
+        </div>
+        <div class="t-body">
+          <div class="tl"><span class="tp">→</span><span class="tc">saarthi start --lang auto</span></div>
+          <div class="tl"><span class="to">✓ Saarthi Bot v2.0 initialized</span></div>
+          <div class="tl"><span class="to">✓ Bilingual mode: ACTIVE</span></div>
+          <div class="tg"></div>
+          <div class="tl"><span class="tp">you:</span><span class="tc"> Set reminder for 9am tomorrow</span></div>
+          <div class="tl"><span class="tb">🤖 Done! Reminder set for tomorrow</span></div>
+          <div class="tl"><span class="tb">   at 9:00 AM ✓</span></div>
+          <div class="tg"></div>
+          <div class="tl"><span class="tp">you:</span><span class="tc"> कल का मौसम कैसा रहेगा?</span></div>
+          <div class="tl"><span class="thi">🤖 कल मौसम साफ़ रहेगा, तापमान</span></div>
+          <div class="tl"><span class="thi">   लगभग 28°C रहेगा। 🌤️</span></div>
+          <div class="tg"></div>
+          <div class="tl"><span class="tp">you:</span><span class="tc"> Automate my daily report</span></div>
+          <div class="tl"><span class="tb">🤖 Workflow created: Daily Report</span></div>
+          <div class="tl"><span class="to">   Steps: Fetch → Process → Send</span></div>
+          <div class="tl"><span class="to">   Schedule: 08:00 AM daily ✓</span></div>
+          <div class="tg"></div>
+          <div class="tl"><span class="tp">→</span><span class="tcur"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BILINGUAL ── -->
+  <section id="bilingual">
+    <div class="sec-center">
+      <div class="sec-tag">// BILINGUAL CORE</div>
+      <h2 class="sec-h">One Bot, <span class="ac">Two Languages</span></h2>
+      <p class="sec-p">Saarthi auto-detects your language. No configuration needed — just talk.</p>
+    </div>
+    <div class="lang-grid">
+      <div class="lc en">
+        <div class="lc-flag">🇬🇧</div>
+        <div class="lc-name">ENGLISH</div>
+        <p class="lc-text">
+          "Saarthi, schedule a team meeting for Friday 3pm and send everyone a reminder the night before."
+        </p>
+        <div class="lc-reply">✓ Meeting scheduled & reminders queued for Thursday night!</div>
+      </div>
+      <div class="lc hi">
+        <div class="lc-flag">🇮🇳</div>
+        <div class="lc-name">हिंदी</div>
+        <p class="lc-text">
+          "सारथी, मेरे boss को एक professional email लिखो और बताओ कि project अगले हफ्ते तैयार होगा।"
+        </p>
+        <div class="lc-reply">✓ Email तैयार है! Review करें और भेजूँ क्या?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section id="how" style="background:rgba(10,14,26,.5)">
+    <div class="sec-center">
+      <div class="sec-tag">// HOW IT WORKS</div>
+      <h2 class="sec-h">Up & Running in <span class="ac">Minutes</span></h2>
+      <p class="sec-p">No complicated setup. Just install, configure once, and start talking.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-t">INSTALL</div>
+        <p class="step-p">Clone the repo and run <code style="color:var(--ng);font-size:.82rem">npm install</code> — takes under 60 seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-t">CONFIGURE</div>
+        <p class="step-p">Add your API key to the config file. Set language to <code style="color:var(--ng);font-size:.82rem">auto</code> for bilingual mode.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-t">LAUNCH</div>
+        <p class="step-p">Run <code style="color:var(--ng);font-size:.82rem">npm start</code> or open the web UI. Saarthi is ready instantly.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-t">AUTOMATE</div>
+        <p class="step-p">Build workflows, set reminders, and let Saarthi handle your repetitive tasks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CHAT PREVIEW ── -->
+  <section id="chat">
+    <div class="sec-center">
+      <div class="sec-tag">// CHAT INTERFACE</div>
+      <h2 class="sec-h">Talk to <span class="ac">Saarthi</span></h2>
+      <p class="sec-p">A clean, fast, bilingual chat interface. Open it and start talking right away.</p>
+    </div>
+    <div class="chat-preview">
+      <div class="cp-head">
+        <div class="cp-av">🤖</div>
+        <div>
+          <div class="cp-info-name">SAARTHI BOT v2.0</div>
+          <div class="cp-info-st">ONLINE — BILINGUAL ACTIVE</div>
+        </div>
+      </div>
+      <div class="cp-body">
+        <div class="msg b">
+          <div class="msg-from">SAARTHI</div>
+          <div class="bubble">Namaste! 🙏 Main Saarthi hoon — aapka personal AI assistant. English ya Hindi, dono mein baat kar sakte ho. Kya karna hai aaj? <em style="color:var(--np);font-size:.85rem;display:block;margin-top:6px">What can I help you with today?</em></div>
+        </div>
+        <div class="msg u">
+          <div class="msg-from">YOU</div>
+          <div class="bubble">मुझे एक professional email draft करनी है मेरे client के लिए</div>
+        </div>
+        <div class="msg b">
+          <div class="msg-from">SAARTHI</div>
+          <div class="bubble">
+            Zaroor! 📧 Email ke liye mujhe kuch details chahiye:<br><br>
+            <span style="color:var(--np)">1.</span> Client ka naam kya hai?<br>
+            <span style="color:var(--np)">2.</span> Email kis baare mein hai?<br>
+            <span style="color:var(--np)">3.</span> Tone: Formal ya Semi-formal?
+          </div>
+        </div>
+        <div class="msg u">
+          <div class="msg-from">YOU</div>
+          <div class="bubble">Client: Mr. Sharma, project update ke baare mein, formal tone</div>
+        </div>
+        <div class="msg b">
+          <div class="msg-from">SAARTHI</div>
+          <div class="bubble">
+            <span style="color:var(--ng);font-size:.8rem;font-family:'Space Mono',monospace;display:block;margin-bottom:8px">✓ EMAIL DRAFTED</span>
+            Subject: Project Status Update — [Project Name]<br><br>
+            Dear Mr. Sharma,<br><br>
+            I hope this message finds you well. I am writing to provide you with a comprehensive update on the current status of our ongoing project...<br><br>
+            <span style="color:var(--np);font-size:.88rem">Email ready hai! Bhejun ya kuch changes karein? 🚀</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PLATFORMS ── -->
+  <section style="text-align:center;padding:80px 60px;background:rgba(10,14,26,.5)">
+    <div class="sec-tag">// COMPATIBILITY</div>
+    <h2 class="sec-h">Any OS, <span class="ac">Any Platform</span></h2>
+    <div class="plat-wrap">
+      <div class="pb">🪟 Windows</div>
+      <div class="pb">🍎 macOS</div>
+      <div class="pb">🐧 Linux</div>
+      <div class="pb">📱 Android</div>
+      <div class="pb">📱 iOS</div>
+      <div class="pb">🌐 Web Browser</div>
+      <div class="pb">🤖 Telegram</div>
+      <div class="pb">💬 Discord</div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <div class="cta-section">
+    <div class="cta-box">
+      <div class="sec-tag" style="margin-bottom:18px">// GET STARTED NOW</div>
+      <h2 class="sec-h" style="font-size:2.4rem">Ready to Meet<br>Your <span class="ac">Saarthi?</span></h2>
+      <p style="color:var(--t2);margin:20px 0 40px;line-height:1.85;font-size:1rem">
+        Deploy in minutes. No setup headaches. Just intelligence that works for you.
+        <br><em style="color:rgba(191,95,255,.7)">अपना सारथी अभी आज़माएं — हिंदी में बात करें।</em>
+      </p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="#chat" class="btn-p"><span>⚡ LAUNCH SAARTHI BOT</span></a>
+        <a href="https://github.com/dhirendram128-netizen/saarthi-bot" target="_blank" class="btn-s">
+          ⭐ STAR ON GITHUB
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="f-logo">SAARTHI BOT</div>
+    <div class="f-links">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
+      <a href="#chat">Chat</a>
+      <a href="https://github.com/dhirendram128-netizen/saarthi-bot" target="_blank">GitHub</a>
+    </div>
+    <div class="f-copy">© 2026 Saarthi Bot | Built with ⚡</div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cur=document.getElementById('cur');
+    const cur2=document.getElementById('cur2');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{
+      mx=e.clientX;my=e.clientY;
+      cur.style.left=(mx-5)+'px';cur.style.top=(my-5)+'px';
+    });
+    (function ani(){
+      rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+      cur2.style.left=(rx-17)+'px';cur2.style.top=(ry-17)+'px';
+      requestAnimationFrame(ani);
+    })();
+    document.querySelectorAll('a,button,.pb,.fc,.lc,.step').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{
+        cur.style.transform='scale(2.2)';
+        cur2.style.transform='scale(1.6)';
+        cur2.style.borderColor='rgba(0,240,255,.9)';
+      });
+      el.addEventListener('mouseleave',()=>{
+        cur.style.transform='scale(1)';
+        cur2.style.transform='scale(1)';
+        cur2.style.borderColor='rgba(0,240,255,.45)';
+      });
+    });
+
+    // Scroll reveal
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.style.opacity='1';
+          e.target.style.transform='translateY(0)';
+        }
+      });
+    },{threshold:.08});
+    document.querySelectorAll('.fc,.lc,.step,.stat,.pb,.msg').forEach(el=>{
+      el.style.opacity='0';
+      el.style.transform='translateY(22px)';
+      el.style.transition='all .65s ease';
+      io.observe(el);
+    });
+
+    // Typing animation in terminal
+    const lines=[
+      {el:null,delay:0}
+    ];
+    // Animate terminal lines on scroll
+    const terminal=document.querySelector('.terminal');
+    const tObs=new IntersectionObserver(([e])=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.tl,.to,.tb,.thi').forEach((el,i)=>{
+          el.style.opacity='0';
+          el.style.transition=`opacity .3s ease ${i*.08}s`;
+          setTimeout(()=>el.style.opacity='1',i*80);
+        });
+        tObs.unobserve(terminal);
+      }
+    },{threshold:.3});
+    if(terminal) tObs.observe(terminal);
+
+    // Nav active state
+    window.addEventListener('scroll',()=>{
+      const nav=document.querySelector('nav');
+      if(window.scrollY>50){
+        nav.style.background='rgba(3,7,18,.97)';
+      } else {
+        nav.style.background='rgba(3,7,18,.88)';
+      }
+    });
+  </script>
+</body>
+</html>
+
+
