@@ -42,7 +42,7 @@ If you want a personal AI assistant that feels local, fast, bilingual, and alway
 Runtime: **Node ≥ 18**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/saarthi-bot.git
+git clone https://github.com/dhirendram128-netizen//saarthi-bot.git
 cd saarthi-bot
 
 npm install
